@@ -56,7 +56,8 @@ function renderCategories() {
   const container = document.getElementById('categories');
   container.innerHTML = `<div class="cat-btn active" onclick="filterCategory('all')">Όλα</div>`;
   categories.forEach(cat => {
-    container.innerHTML += `<div class="cat-btn" onclick="filterCategory('\( {cat.id}')"> \){cat.name}</div>`;
+        container.innerHTML += `<div class="cat-btn" onclick="filterCategory('${cat.id}')">${cat.name}</div>`;
+
   });
 }
 
