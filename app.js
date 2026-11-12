@@ -211,7 +211,7 @@ function updateSubcategories() {
   const cat = categories.find(c => c.id === catId);
   if (cat && cat.subcategories) {
     cat.subcategories.forEach(sub => {
-      subSel.innerHTML += `<option value="\( {sub}"> \){sub}</option>`;
+            subSel.innerHTML += `<option value="${sub}">${sub}</option>`;
     });
   }
 }
