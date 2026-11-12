@@ -198,7 +198,7 @@ function populateCategorySelect() {
   const sel = document.getElementById('adCategory');
   sel.innerHTML = '<option value="">Επιλέξτε κατηγορία</option>';
   categories.forEach(cat => {
-    sel.innerHTML += `<option value="\( {cat.id}"> \){cat.name}</option>`;
+       sel.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
   });
   // Αρχικοποίηση υποκατηγοριών
   updateSubcategories();
