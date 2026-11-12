@@ -1,0 +1,96 @@
+{
+  "categories": [
+    {
+      "id": "electronics",
+      "name": "Электроника",
+      "subcategories": ["Смартфоны", "Ноутбуки", "Планшеты", "Телевизоры", "Аудио"]
+    },
+    {
+      "id": "vehicles",
+      "name": "Транспорт",
+      "subcategories": ["Легковые авто", "Мотоциклы", "Велосипеды", "Запчасти"]
+    },
+    {
+      "id": "home",
+      "name": "Дом и сад",
+      "subcategories": ["Мебель", "Бытовая техника", "Инструменты", "Растения"]
+    },
+    {
+      "id": "fashion",
+      "name": "Одежда и обувь",
+      "subcategories": ["Мужская", "Женская", "Детская", "Обувь"]
+    },
+    {
+      "id": "realestate",
+      "name": "Недвижимость",
+      "subcategories": ["Квартиры", "Дома", "Аренда", "Коммерческая"]
+    },
+    {
+      "id": "services",
+      "name": "Услуги",
+      "subcategories": ["Ремонт", "Обучение", "Красота", "Перевозки"]
+    }
+  ],
+  "sampleAds": [
+    {
+      "id": "ad1",
+      "title": "iPhone 15 Pro 256GB",
+      "price": 850,
+      "currency": "EUR",
+      "category": "electronics",
+      "subcategory": "Смартфоны",
+      "description": "Отличное состояние, полный комплект, гарантия ещё 8 месяцев. Цвет Natural Titanium.",
+      "location": "Афины",
+      "images": [
+        "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600",
+        "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600",
+        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",
+        "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=600",
+        "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600"
+      ],
+      "mainImage": 0,
+      "vip": true,
+      "date": "2026-11-10",
+      "userId": "demo"
+    },
+    {
+      "id": "ad2",
+      "title": "Диван угловой серый",
+      "price": 320,
+      "currency": "EUR",
+      "category": "home",
+      "subcategory": "Мебель",
+      "description": "Удобный угловой диван, ткань антивандальная. Самовывоз или доставка за отдельную плату.",
+      "location": "Пирей",
+      "images": [
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
+        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600",
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600"
+      ],
+      "mainImage": 0,
+      "vip": false,
+      "date": "2026-11-09",
+      "userId": "demo"
+    },
+    {
+      "id": "ad3",
+      "title": "Велосипед горный Trek",
+      "price": 450,
+      "currency": "EUR",
+      "category": "vehicles",
+      "subcategory": "Велосипеды",
+      "description": "Горный велосипед Trek в отличном состоянии. 21 скорость, новые покрышки.",
+      "location": "Афины",
+      "images": [
+        "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=600",
+        "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=600",
+        "https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=600",
+        "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600"
+      ],
+      "mainImage": 0,
+      "vip": false,
+      "date": "2026-11-08",
+      "userId": "demo"
+    }
+  ]
+}
