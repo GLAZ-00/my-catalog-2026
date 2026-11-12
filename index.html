@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketPlace — Объявления</title>
+  <style>
+    :root {
+      --primary: #002f34;
+      --accent: #23e5db;
+      --bg: #f7f8f8;
+      --card: #ffffff;
+      --text: #002f34;
+      --muted: #406367;
+      --border: #e0e0e0;
+      --danger: #e53e3e;
+      --success: #38a169;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    header { background: var(--primary); color: white; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    .logo { font-size: 28px; font-weight: 800; color: var(--accent); cursor: pointer; }
+    .search-bar { flex: 1; max-width: 500px; margin: 0 32px; display: flex; }
+    .search-bar input { flex: 1; padding: 12px 16px; border: none; border-radius: 4px 0 0 4px; font-size: 16px; }
+    .search-bar button { background: var(--accent); border: none; padding: 0 20px; border-radius: 0 4px 4px 0; cursor: pointer; font-weight: 600; }
+    .auth-buttons button, .user-menu button { background: transparent; border: 1px solid white; color: white; padding: 8px 16px; margin-left: 8px; border-radius: 4px; cursor: pointer; }
+    .auth-buttons button:hover, .user-menu button:hover { background: rgba(255,255,255,.1); }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .categories { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; margin-bottom: 24px; }
+    .cat-btn { background: white; border: 1px solid var(--border); padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 14px; }
+    .cat-btn.active, .cat-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .ad-card { background: var(--card); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; }
+    .ad-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+    .ad-card.vip { border: 2px solid #ffd700; }
+    .ad-card.vip::before { content: "VIP"; position: absolute; top: 8px; left: 8px; background: #ffd700; color: #000; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 3px; z-index: 2; }
+    .ad-card img { width: 100%; height: 180px; object-fit: cover; }
+    .ad-info { padding: 12px; }
+    .ad-price { font-size: 18px; font-weight: 700; color: var(--primary); }
+    .ad-title { font-size: 15px; margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ad-loc { font-size: 13px; color: var(--muted); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 12px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; position: relative; }
+    .close-modal { position: absolute; top: 12px; right: 16px; font-size: 28px; cursor: pointer; background: none; border: none; }
+    .carousel { position: relative; background: #000; }
+    .carousel-main { width: 100%; height: 420px; object-fit: contain; background: #111; }
+    .carousel-thumbs { display: flex; gap: 8px; padding: 12px; overflow-x: auto; background: #f0f0f0; }
+    .carousel-thumbs img { width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px; }
+    .carousel-thumbs img.active { border-color: var(--accent); }
+    .carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; }
+    .carousel-nav.prev { left: 12px; }
+    .carousel-nav.next { right: 12px; }
+    .ad-details { padding: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 15px; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .btn { background: var(--accent); color: var(--primary); border: none; padding: 12px 24px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 16px; }
+    .btn:hover { filter: brightness(1.05); }
+    .btn-secondary { background: #e0e0e0; color: var(--text); }
+    .btn-danger { background: var(--danger); color: white; }
+    .image-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .image-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; }
+    .cabinet { display: none; }
+    .cabinet.active { display: block; }
+    .my-ads { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    @media (max-width: 768px) {
+      .search-bar { margin: 0 12px; }
+      .carousel-main { height: 280px; }
+      header { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" onclick="showHome()">MarketPlace</div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Поиск объявлений...">
+      <button onclick="searchAds()">Найти</button>
+    </div>
+    <div class="auth-buttons" id="authButtons">
+      <button onclick="openModal('loginModal')">Войти</button>
+      <button onclick="openModal('registerModal')">Регистрация</button>
+    </div>
+    <div class="user-menu" id="userMenu" style="display:none;">
+      <span id="userName"></span>
+      <button onclick="showCabinet()">Мои объявления</button>
+      <button onclick="logout()">Выйти</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="categories" id="categories"></div>
+    <div id="homeView">
+      <div class="ads-grid" id="adsGrid"></div>
+    </div>
+    <div class="cabinet" id="cabinetView">
+      <h2>Личный кабинет</h2>
+      <button class="btn" onclick="openModal('postAdModal')" style="margin:16px 0;">Подать объявление</button>
+      <div class="my-ads" id="myAds"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="adModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('adModal')">&times;</button>
+      <div class="carousel" id="carousel">
+        <img class="carousel-main" id="carouselMain" src="" alt="">
+        <button class="carousel-nav prev" onclick="carouselPrev()">‹</button>
+        <button class="carousel-nav next" onclick="carouselNext()">›</button>
+        <div class="carousel-thumbs" id="carouselThumbs"></div>
+      </div>
+      <div class="ad-details" id="adDetails"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="loginModal">
+    <div class="modal-content" style="max-width:420px; padding:24px;">
+      <button class="close-modal" onclick="closeModal('loginModal')">&times;</button>
+      <h2>Вход</h2>
+      <form id="loginForm" onsubmit="login(event)">
+        <div class="form-group">
+          <label>Email или телефон</label>
+          <input type="text" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Пароль</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Войти</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="registerModal">
+    <div class="modal-content" style="max-width:420px; padding:24px;">
+      <button class="close-modal" onclick="closeModal('registerModal')">&times;</button>
+      <h2>Регистрация</h2>
+      <form id="registerForm" onsubmit="register(event)">
+        <div class="form-group">
+          <label>Имя</label>
+          <input type="text" id="regName" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Телефон</label>
+          <input type="tel" id="regPhone" placeholder="+30..." required>
+        </div>
+        <div class="form-group">
+          <label>Пароль</label>
+          <input type="password" id="regPassword" required minlength="6">
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Зарегистрироваться</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="postAdModal">
+    <div class="modal-content" style="max-width:560px; padding:24px;">
+      <button class="close-modal" onclick="closeModal('postAdModal')">&times;</button>
+      <h2>Подать объявление</h2>
+      <form id="postAdForm" onsubmit="postAd(event)">
+        <div class="form-group">
+          <label>Название</label>
+          <input type="text" id="adTitle" required>
+        </div>
+        <div class="form-group">
+          <label>Цена (EUR)</label>
+          <input type="number" id="adPrice" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Категория</label>
+          <select id="adCategory" onchange="updateSubcategories()" required></select>
+        </div>
+        <div class="form-group">
+          <label>Подкатегория</label>
+          <select id="adSubcategory" required></select>
+        </div>
+        <div class="form-group">
+          <label>Местоположение</label>
+          <input type="text" id="adLocation" required>
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="adDescription" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Фотографии (до 5 шт.)</label>
+          <input type="file" id="adImages" accept="image/*" multiple onchange="previewImages(event)">
+          <div class="image-preview" id="imagePreview"></div>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="adVip"> Сделать VIP (поднять наверх)</label>
+        </div>
+        <button type="submit" class="btn" style="width:100%;">Опубликовать</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
