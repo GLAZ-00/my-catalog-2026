@@ -1,5 +1,5 @@
-// MarketPlace - fully working client-side demo
-// Works with localStorage. Ready for GitHub Pages.
+// Αγορά - πλήρως λειτουργικό client-side demo
+// Λειτουργεί με localStorage. Έτοιμο για GitHub Pages.
 
 let categories = [];
 let allAds = [];
@@ -8,16 +8,14 @@ let currentAdImages = [];
 let carouselIndex = 0;
 let selectedImages = [];
 
-// Load data
+// Φόρτωση δεδομένων
 async function init() {
   try {
     const res = await fetch('data.json');
     const data = await res.json();
     categories = data.categories;
-    // Load ads from localStorage or use samples
     const stored = localStorage.getItem('ads');
     allAds = stored ? JSON.parse(stored) : data.sampleAds;
-    // Load user
     const user = localStorage.getItem('currentUser');
     if (user) {
       currentUser = JSON.parse(user);
@@ -28,7 +26,7 @@ async function init() {
     populateCategorySelect();
   } catch (e) {
     console.error(e);
-    alert('Ошибка загрузки данных');
+    alert('Σφάλμα φόρτωσης δεδομένων');
   }
 }
 
@@ -56,7 +54,7 @@ function updateAuthUI() {
 
 function renderCategories() {
   const container = document.getElementById('categories');
-  container.innerHTML = `<div class="cat-btn active" onclick="filterCategory('all')">Все</div>`;
+  container.innerHTML = `<div class="cat-btn active" onclick="filterCategory('all')">Όλα</div>`;
   categories.forEach(cat => {
     container.innerHTML += `<div class="cat-btn" onclick="filterCategory('\( {cat.id}')"> \){cat.name}</div>`;
   });
@@ -84,7 +82,6 @@ function searchAds() {
 
 function renderAds(ads) {
   const grid = document.getElementById('adsGrid');
-  // Sort VIP first
   const sorted = [...ads].sort((a, b) => (b.vip ? 1 : 0) - (a.vip ? 1 : 0));
   grid.innerHTML = '';
   sorted.forEach(ad => {
@@ -114,10 +111,10 @@ function openAd(id) {
     <h2>${ad.title}</h2>
     <div style="font-size:28px; font-weight:700; color:#002f34; margin:12px 0;">${ad.price} ${ad.currency}</div>
     <p style="margin-bottom:16px;">${ad.description}</p>
-    <div style="color:#406367;">Категория: ${getCategoryName(ad.category)} → ${ad.subcategory}</div>
-    <div style="color:#406367;">Место: ${ad.location}</div>
-    <div style="color:#406367; margin-top:8px;">Опубликовано: ${ad.date}</div>
-    ${ad.vip ? '<div style="margin-top:12px; color:#b8860b; font-weight:700;">★ VIP объявление</div>' : ''}
+    <div style="color:#406367;">Κατηγορία: ${getCategoryName(ad.category)} → ${ad.subcategory}</div>
+    <div style="color:#406367;">Τοποθεσία: ${ad.location}</div>
+    <div style="color:#406367; margin-top:8px;">Δημοσιεύτηκε: ${ad.date}</div>
+    ${ad.vip ? '<div style="margin-top:12px; color:#b8860b; font-weight:700;">★ VIP αγγελία</div>' : ''}
   `;
   openModal('adModal');
 }
@@ -157,10 +154,9 @@ function register(e) {
   const email = document.getElementById('regEmail').value;
   const phone = document.getElementById('regPhone').value;
   const password = document.getElementById('regPassword').value;
-  // Simple storage (demo only - never do this in production!)
   let users = JSON.parse(localStorage.getItem('users') || '[]');
   if (users.find(u => u.email === email)) {
-    alert('Пользователь с таким email уже существует');
+    alert('Υπάρχει ήδη χρήστης με αυτό το email');
     return;
   }
   const user = { id: Date.now().toString(), name, email, phone, password };
@@ -170,7 +166,7 @@ function register(e) {
   saveUser();
   updateAuthUI();
   closeModal('registerModal');
-  alert('Регистрация успешна!');
+  alert('Η εγγραφή ολοκληρώθηκε!');
 }
 
 function login(e) {
@@ -185,7 +181,7 @@ function login(e) {
     updateAuthUI();
     closeModal('loginModal');
   } else {
-    alert('Неверный email/телефон или пароль');
+    alert('Λάθος email/τηλέφωνο ή κωδικός');
   }
 }
 
@@ -199,20 +195,22 @@ function logout() {
 // Post Ad
 function populateCategorySelect() {
   const sel = document.getElementById('adCategory');
-  sel.innerHTML = '<option value="">Выберите категорию</option>';
+  sel.innerHTML = '<option value="">Επιλέξτε κατηγορία</option>';
   categories.forEach(cat => {
-    sel.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+    sel.innerHTML += `<option value="\( {cat.id}"> \){cat.name}</option>`;
   });
+  // Αρχικοποίηση υποκατηγοριών
+  updateSubcategories();
 }
 
 function updateSubcategories() {
   const catId = document.getElementById('adCategory').value;
   const subSel = document.getElementById('adSubcategory');
-  subSel.innerHTML = '';
+  subSel.innerHTML = '<option value="">Επιλέξτε υποκατηγορία</option>';
   const cat = categories.find(c => c.id === catId);
-  if (cat) {
+  if (cat && cat.subcategories) {
     cat.subcategories.forEach(sub => {
-      subSel.innerHTML += `<option value="${sub}">${sub}</option>`;
+      subSel.innerHTML += `<option value="\( {sub}"> \){sub}</option>`;
     });
   }
 }
@@ -237,11 +235,17 @@ function previewImages(e) {
 function postAd(e) {
   e.preventDefault();
   if (!currentUser) {
-    alert('Сначала войдите в аккаунт');
+    alert('Πρέπει να συνδεθείτε πρώτα');
     return;
   }
   if (selectedImages.length === 0) {
-    alert('Добавьте хотя бы одно фото');
+    alert('Προσθέστε τουλάχιστον μία φωτογραφία');
+    return;
+  }
+  const catVal = document.getElementById('adCategory').value;
+  const subVal = document.getElementById('adSubcategory').value;
+  if (!catVal || !subVal) {
+    alert('Επιλέξτε κατηγορία και υποκατηγορία');
     return;
   }
   const ad = {
@@ -249,8 +253,8 @@ function postAd(e) {
     title: document.getElementById('adTitle').value,
     price: Number(document.getElementById('adPrice').value),
     currency: 'EUR',
-    category: document.getElementById('adCategory').value,
-    subcategory: document.getElementById('adSubcategory').value,
+    category: catVal,
+    subcategory: subVal,
     description: document.getElementById('adDescription').value,
     location: document.getElementById('adLocation').value,
     images: selectedImages,
@@ -266,7 +270,7 @@ function postAd(e) {
   document.getElementById('imagePreview').innerHTML = '';
   closeModal('postAdModal');
   renderAds(allAds);
-  alert('Объявление опубликовано!');
+  alert('Η αγγελία δημοσιεύτηκε!');
 }
 
 // Cabinet
@@ -288,7 +292,7 @@ function renderMyAds() {
   const my = allAds.filter(ad => ad.userId === currentUser.id);
   container.innerHTML = '';
   if (my.length === 0) {
-    container.innerHTML = '<p>У вас пока нет объявлений</p>';
+    container.innerHTML = '<p>Δεν έχετε αγγελίες ακόμα</p>';
     return;
   }
   my.forEach(ad => {
@@ -300,7 +304,7 @@ function renderMyAds() {
       <div class="ad-info">
         <div class="ad-price">${ad.price} EUR</div>
         <div class="ad-title">${ad.title}</div>
-        <button class="btn-danger" style="margin-top:8px; padding:6px 12px; font-size:13px;" onclick="event.stopPropagation(); deleteAd('${ad.id}')">Удалить</button>
+        <button class="btn-danger" style="margin-top:8px; padding:6px 12px; font-size:13px;" onclick="event.stopPropagation(); deleteAd('${ad.id}')">Διαγραφή</button>
       </div>
     `;
     container.appendChild(card);
@@ -308,7 +312,7 @@ function renderMyAds() {
 }
 
 function deleteAd(id) {
-  if (confirm('Удалить объявление?')) {
+  if (confirm('Διαγραφή αγγελίας;')) {
     allAds = allAds.filter(a => a.id !== id);
     saveAds();
     renderMyAds();
