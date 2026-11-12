@@ -91,7 +91,7 @@ function renderAds(ads) {
     card.className = `ad-card ${ad.vip ? 'vip' : ''}`;
     card.onclick = () => openAd(ad.id);
     card.innerHTML = `
-      <img src="\( {mainImg}" alt=" \){ad.title}" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'">
+            <img src="${mainImg}" alt="${ad.title}" onerror="this.src='https://placeholder.com'">
       <div class="ad-info">
         <div class="ad-price">${ad.price} ${ad.currency}</div>
         <div class="ad-title">${ad.title}</div>
