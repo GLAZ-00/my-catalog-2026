@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MarketPlace — Объявления</title>
+  <title>Αγορά — Αγγελίες</title>
   <style>
     :root {
       --primary: #002f34;
@@ -74,19 +74,19 @@
 </head>
 <body>
   <header>
-    <div class="logo" onclick="showHome()">MarketPlace</div>
+    <div class="logo" onclick="showHome()">Αγορά</div>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Поиск объявлений...">
-      <button onclick="searchAds()">Найти</button>
+      <input type="text" id="searchInput" placeholder="Αναζήτηση αγγελιών...">
+      <button onclick="searchAds()">Αναζήτηση</button>
     </div>
     <div class="auth-buttons" id="authButtons">
-      <button onclick="openModal('loginModal')">Войти</button>
-      <button onclick="openModal('registerModal')">Регистрация</button>
+      <button onclick="openModal('loginModal')">Σύνδεση</button>
+      <button onclick="openModal('registerModal')">Εγγραφή</button>
     </div>
     <div class="user-menu" id="userMenu" style="display:none;">
       <span id="userName"></span>
-      <button onclick="showCabinet()">Мои объявления</button>
-      <button onclick="logout()">Выйти</button>
+      <button onclick="showCabinet()">Οι αγγελίες μου</button>
+      <button onclick="logout()">Αποσύνδεση</button>
     </div>
   </header>
 
@@ -96,12 +96,11 @@
       <div class="ads-grid" id="adsGrid"></div>
     </div>
     <div class="cabinet" id="cabinetView">
-      <h2>Личный кабинет</h2>
-      <button class="btn" onclick="openModal('postAdModal')" style="margin:16px 0;">Подать объявление</button>
+      <h2>Προσωπικός λογαριασμός</h2>
+      <button class="btn" onclick="openModal('postAdModal')" style="margin:16px 0;">Δημοσίευση αγγελίας</button>
       <div class="my-ads" id="myAds"></div>
     </div>
   </div>
-
   <div class="modal" id="adModal">
     <div class="modal-content">
       <button class="close-modal" onclick="closeModal('adModal')">&times;</button>
@@ -118,17 +117,17 @@
   <div class="modal" id="loginModal">
     <div class="modal-content" style="max-width:420px; padding:24px;">
       <button class="close-modal" onclick="closeModal('loginModal')">&times;</button>
-      <h2>Вход</h2>
+      <h2>Σύνδεση</h2>
       <form id="loginForm" onsubmit="login(event)">
         <div class="form-group">
-          <label>Email или телефон</label>
+          <label>Email ή τηλέφωνο</label>
           <input type="text" id="loginEmail" required>
         </div>
         <div class="form-group">
-          <label>Пароль</label>
+          <label>Κωδικός</label>
           <input type="password" id="loginPassword" required>
         </div>
-        <button type="submit" class="btn" style="width:100%;">Войти</button>
+        <button type="submit" class="btn" style="width:100%;">Σύνδεση</button>
       </form>
     </div>
   </div>
@@ -136,10 +135,10 @@
   <div class="modal" id="registerModal">
     <div class="modal-content" style="max-width:420px; padding:24px;">
       <button class="close-modal" onclick="closeModal('registerModal')">&times;</button>
-      <h2>Регистрация</h2>
+      <h2>Εγγραφή</h2>
       <form id="registerForm" onsubmit="register(event)">
         <div class="form-group">
-          <label>Имя</label>
+          <label>Όνομα</label>
           <input type="text" id="regName" required>
         </div>
         <div class="form-group">
@@ -147,14 +146,14 @@
           <input type="email" id="regEmail" required>
         </div>
         <div class="form-group">
-          <label>Телефон</label>
+          <label>Τηλέφωνο</label>
           <input type="tel" id="regPhone" placeholder="+30..." required>
         </div>
         <div class="form-group">
-          <label>Пароль</label>
+          <label>Κωδικός</label>
           <input type="password" id="regPassword" required minlength="6">
         </div>
-        <button type="submit" class="btn" style="width:100%;">Зарегистрироваться</button>
+        <button type="submit" class="btn" style="width:100%;">Εγγραφή</button>
       </form>
     </div>
   </div>
@@ -162,41 +161,41 @@
   <div class="modal" id="postAdModal">
     <div class="modal-content" style="max-width:560px; padding:24px;">
       <button class="close-modal" onclick="closeModal('postAdModal')">&times;</button>
-      <h2>Подать объявление</h2>
+      <h2>Δημοσίευση αγγελίας</h2>
       <form id="postAdForm" onsubmit="postAd(event)">
         <div class="form-group">
-          <label>Название</label>
+          <label>Τίτλος</label>
           <input type="text" id="adTitle" required>
         </div>
         <div class="form-group">
-          <label>Цена (EUR)</label>
+          <label>Τιμή (EUR)</label>
           <input type="number" id="adPrice" min="0" required>
         </div>
         <div class="form-group">
-          <label>Категория</label>
+          <label>Κατηγορία</label>
           <select id="adCategory" onchange="updateSubcategories()" required></select>
         </div>
         <div class="form-group">
-          <label>Подкатегория</label>
+          <label>Υποκατηγορία</label>
           <select id="adSubcategory" required></select>
         </div>
         <div class="form-group">
-          <label>Местоположение</label>
+          <label>Τοποθεσία</label>
           <input type="text" id="adLocation" required>
         </div>
         <div class="form-group">
-          <label>Описание</label>
+          <label>Περιγραφή</label>
           <textarea id="adDescription" required></textarea>
         </div>
         <div class="form-group">
-          <label>Фотографии (до 5 шт.)</label>
+          <label>Φωτογραφίες (έως 5)</label>
           <input type="file" id="adImages" accept="image/*" multiple onchange="previewImages(event)">
           <div class="image-preview" id="imagePreview"></div>
         </div>
         <div class="form-group">
-          <label><input type="checkbox" id="adVip"> Сделать VIP (поднять наверх)</label>
+          <label><input type="checkbox" id="adVip"> Κάνε VIP (ανέβασε στην κορυφή)</label>
         </div>
-        <button type="submit" class="btn" style="width:100%;">Опубликовать</button>
+        <button type="submit" class="btn" style="width:100%;">Δημοσίευση</button>
       </form>
     </div>
   </div>
